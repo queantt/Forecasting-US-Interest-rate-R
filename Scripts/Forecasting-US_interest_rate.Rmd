@@ -1,0 +1,324 @@
+---
+title: "US interest rate-Draft"
+author: "An Tran"
+date: "8/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(quantmod)
+library(forecast)
+library(AER)
+library(zoo)
+library(xts)
+library(delt)
+library(fGarch)
+library(forecast)
+library(dynlm)
+library(lubridate)
+library(ggplot2)
+library(readxl)
+```
+
+```{r}
+#load the dataset of variables
+us_ir_macro <- read_xlsx("~/Data sample/Text_for_US_interest_rate.xlsx")
+summary(us_ir_macro)
+```
+
+```{r}
+#adjust column names
+colnames(us_ir_macro) <- c("DATE", "1 mth", "12 mth", "36 mth", 
+                          "60 mth", "CPI", "inf", "GDP")
+```
+
+
+```{r}
+# interest rate series as xts object (set up the interest rate with the period time given)
+us_ir_1mth <- xts(us_ir_macro$`1 mth`, us_ir_macro$DATE)["1970::2020"]
+us_ir_12mth <- xts(us_ir_macro$`12 mth`, us_ir_macro$DATE)["1970::2020"]
+us_ir_36mth <- xts(us_ir_macro$`36 mth`, us_ir_macro$DATE)["1970::2020"]
+us_ir_60mth <- xts(us_ir_macro$`60 mth`, us_ir_macro$DATE)["1970::2020"]
+```
+
+```{r}
+# interest rate change series as xts object
+#formula: Δlog(Yt)=log(Yt)−log(Yt−1)=log(Y/lag(Y))
+us_ir_1mth_change <- xts(400* log(us_ir_1mth/lag(us_ir_1mth)))
+us_ir_36mth_change <- xts(400* log(us_ir_36mth/lag(us_ir_36mth)))
+us_ir_60mth_change <- xts(400* log(us_ir_60mth/lag(us_ir_60mth)))
+```
+
+```{r}
+#error when running 12mth due to the characters in the month
+us_ir_12mth_change <- xts(400* log(us_ir_12mth/lag(us_ir_12mth)))
+```
+
+
+```{r}
+#produce the figure "US interest rate 1mth"
+plot(log(as.zoo(us_ir_1mth)),
+     lwd = 2,
+     ylab = "logarithm",
+     xlab = "date",
+     main = "US interest rate 1-month") 
+```
+
+```{r}
+#produce the figure "US interest rate 12 mth" # error due to the previos process
+plot(log(as.zoo(us_ir_12mth)),
+     lwd = 2,
+     ylab = "logarithm",
+     xlab = "date",
+     main = "US interest rate 12-month") 
+```
+
+
+```{r}
+#produce the figure "US interest rate 36 mth" 
+plot(log(as.zoo(us_ir_36mth)),
+     lwd = 2,
+     ylab = "logarithm",
+     xlab = "date",
+     main = "US interest rate 36-month") 
+```
+
+
+```{r}
+#produce the figure "US interest rate 60 mth" 
+plot(log(as.zoo(us_ir_60mth)),
+     lwd = 2,
+     ylab = "logarithm",
+     xlab = "date",
+     main = "US interest rate 60-month") 
+```
+
+```{r}
+#compute logarithms, annual growth rates and 1st lag of growth rates
+#AnnualGrowthYt=400⋅Δlog(Yt)
+quants <- function(series) #quants in quantmod library
+  {s <- series
+  return(
+  data.frame("Level" = s, #s: time series data
+               "Logarithm" = log(s), # indicate with percent present by "log"
+               "AnnualGrowthRate" = 400 * log(s / lag(s)), #compute annual growth rate
+               "1stLagAnnualGrowthRate" = lag(400 * log(s / lag(s))))) } #lag.1_annualgrowh
+
+```
+
+
+```{r}
+#obtain a data.frame with level, logarithm,annual growth rate and its 1st lag of interest rate
+```
+
+```{r}
+#autocorrelation of the time series of us_interest rate 1mth change
+#Autocorrelations of series 'na.omit(us_interest rate 1mth change)', by lag
+acf(na.omit(us_ir_1mth_change), lag.max = 4, plot = FALSE)
+```
+
+
+
+```{r}
+# define series as xts objects
+cpi <- xts(us_ir_macro$CPI,us_ir_macro$DATE)["1970::2020"] # CPI variables
+inf <- xts(us_ir_macro$inf,us_ir_macro$DATE)["1970::2020"] # inf variables
+gdp <- xts(us_ir_macro$GDP,us_ir_macro$DATE)["1970::2020"] # GDP variables
+```
+
+```{r}
+# divide plotting area into 2x2 matrix
+par(mfrow = c(2, 2))
+```
+
+```{r}
+# plot the series
+plot(as.zoo(cpi),
+     lwd = 2,
+     ylab = "Percent",
+     xlab = "Date",
+     main = "US Cpnsumer Price Index (CPI) ",
+     cex.main = 1)
+plot(as.zoo(inf),
+     lwd = 2,
+     ylab = "Percent",
+     xlab = "Date",
+     main = "US inflation ",
+     cex.main = 1)
+plot(as.zoo(gdp),
+     lwd = 2,
+     ylab = "Percent",
+     xlab = "Date",
+     main = "US Grorss Domestic Product ",
+     cex.main = 1)
+```
+
+
+```{r}
+#subset data
+us_ir_Sub1 <- us_ir_1mth_change["1971::2019"]
+View(us_ir_1mth)
+```
+
+```{r}
+#Estimate the model
+ar.ols(us_ir_Sub1,
+       order.max = 1,
+       demean = FALSE,
+       intercept = TRUE)
+```
+
+```{r}
+#length of data set
+N <- length(us_ir_Sub1)
+us_ir_Sub1_level <- as.numeric(us_ir_Sub1[-1])
+us_ir_Sub1_lags <- as.numeric(us_ir_Sub1[-N])
+```
+
+```{r}
+#estimate the model
+armod <- lm(us_ir_Sub1_level ~ us_ir_Sub1_lags)
+```
+
+```{r}
+#Robust summary 
+coefficients(armod, vcov. = vcovHC, type="HC1")
+```
+
+
+```{r}
+#Non robust 
+summary(armod)$coefficients
+```
+
+
+```{r}
+#assign US interest rate change in 2019:12:01
+new <- data.frame("us_ir_Sub1_lags" = us_ir_Sub1_level[N-1])
+```
+
+
+
+```{r}
+#forecast US interest rate change in 2020:01:01
+forecast(armod, newdata = new )
+```
+
+
+
+```{r}
+#compute the forecast error
+forecast(armod, newdata = new)$mean - us_ir_1mth_change["2019"][1]
+```
+
+```{r}
+Sys.timezone()
+```
+```{r}
+#R^2
+summary(armod)$r.squared
+```
+```{r}
+#SER
+summary(armod)$sigma
+```
+
+```{r}
+#AR(p) model with dynlm: dynamic linear models and time series regression
+us_ir_1mth_AR2 <- dynlm(ts(us_ir_Sub1_level) ~ L(ts(us_ir_Sub1_level))
+          + L(ts(us_ir_Sub1_level), 2))
+coefficients(us_ir_1mth_AR2, vcov. = sandwich)
+summary(us_ir_1mth_AR2)$r.squared
+summary(us_ir_1mth_AR2)$sigma
+```
+```{r}
+coeftest(us_ir_1mth_AR2, vcov. = , sandwich)
+```
+
+```{r}
+# AR(2) forecast of interest rate change in 2020-01-01
+forecast <- c("20120-01-01" = coef(us_ir_1mth_AR2) %*% c(1, us_ir_Sub1_level[N-1], us_ir_Sub1_level[N-2]))
+
+```
+
+
+```{r}
+#compute AR(2) forecast error
+us_ir_1mth["2020"][1]-forecast
+```
+
+```{r}
+#convert US interest rate 1mth change and other variables to ts objects
+us_ir_1mth_change_ts <- ts(us_ir_1mth_change,
+                            start = c(1970,1),
+                            end = c(2020,1),
+                            frequency = 12)
+              
+cpi_ts <- ts(cpi,
+             start = c(1970,1),
+             end = c(2020,1),
+             frequency = 12)
+              
+inf_ts <- ts(inf,
+             start = c(1970,1),
+             end = c(2020,1),
+             frequency = 12)
+
+              
+gdp_ts <- ts(gdp,
+             start = c(1970,1),
+             end = c(2020,1),
+             frequency = 4)
+```
+
+```{r}
+#join the both timeseries objects (if add GDP => error, not same frequency)
+ADLdata <- ts.union(us_ir_1mth_change_ts,cpi_ts,inf_ts)
+```
+
+
+```{r}
+#2019:11/2019:12 data on US interest rate change in 1 month and macro variables
+subset <- window(ADLdata, c(2019,11), c(2019,12))
+#ADL(2,1) US interest rate change in 1 month for 2020:01
+ADL21_forecast <- coef(GDPGR_ADL21)
+ADL21_forecast
+
+```
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

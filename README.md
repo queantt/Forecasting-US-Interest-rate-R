@@ -1,5 +1,5 @@
 # Forecasting-US-Interest-rate-R
-Script-method-output
+<(Script-method-output)/>
 This repository contains the data behind the "Forecasting the US interest rate from 1970 to 2020" using R, and the code that I used to clean, analyse and present the numbers.
 Cleaning_script.R: this imports raw data from various sources, but mostly in FRED ( historical time seriesmonthly). 
 For interest-rate variables, the data incomplete might be removed.

@@ -5,7 +5,7 @@ This repository contains the data behind the "Forecasting the US interest rate f
 
 Cleaning_script.R: 
 
-- This imports raw data from various sources, but mostly in FRED ( historical time seriesmonthly). 
+- This imports raw data from various sources, but mostly in FRED (historical time series monthly). 
 
 Data_source.R:
 

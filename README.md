@@ -15,7 +15,7 @@ Combine with the Cross-validation time series data will increase the accurate pr
 
 ***Source data***
 
-The dataset are obtained form a number of statistic bureas, goverment departments. The source documents in the link:.... (folder/link). 
+The dataset are obtained form number of statistic bureases, goverment departments. The source documents in the link:.... (folder/link). 
 
 All most the data are automatically downloaded from the offical websites.
 

@@ -1,5 +1,5 @@
 # Forecasting-US-Interest-rate-R
-(Script-method-output)
+**Script-method-output**
 
 This repository contains the data behind the "Forecasting the US interest rate from 1970 to 2020" using R, and the code that I used to clean, analyse and present the numbers.
 
@@ -13,7 +13,7 @@ Using the main VAR to predict the interest rates, and an additional model such a
 
 Combine with the Cross-validation time series data will increase the accurate prediction. 
 
-(Source data)
+**Source data**
 
 The dataset are obtained form a number of statistic bureas, goverment departments. The source documents in the link:.... (folder/link). 
 

@@ -1,5 +1,5 @@
 # Forecasting-US-Interest-rate-R
-**Script-method-output**
+**Script-method-output_ _
 
 This repository contains the data behind the "Forecasting the US interest rate from 1970 to 2020" using R, and the code that I used to clean, analyse and present the numbers.
 

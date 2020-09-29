@@ -15,7 +15,7 @@ Data_source.R:
 
 Notes: The dataset are obtained form number of statistic bureases, goverment departments. The source documents in the link:.... (folder/link). All most the data are automatically downloaded from the offical websites. The full of list of source and links are collated in a filed called .....(links)
 
-Method:
+Method.R:
 
 - Using the main VAR to predict the interest rates, and an additional model such as AR, that will have a good comparison. 
 

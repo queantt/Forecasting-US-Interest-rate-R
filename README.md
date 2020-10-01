@@ -17,13 +17,11 @@ Notes: The dataset are obtained form number of statistic bureases, goverment dep
 
 Macro variables:
  
- - CPI: CPI growth rate, monthly: https://fred.stlouisfed.org/series/CPALTT01USM657N
+ - Inflation (CPI): monthy https://fred.stlouisfed.org/series/FPCPITOTLZGUSA
  
- - Real Gross Domestic Product: using the real GDP growth rate, quarterly: https://fred.stlouisfed.org/series/A191RL1Q225SBEA
+ - Real Gross Domestic Product: using the real GDP growth rate, quarterly https://fred.stlouisfed.org/series/A191RL1Q225SBEA
  
  - Unemployment Rate (UN): monthly  https://fred.stlouisfed.org/series/UNRATE
- 
- - Inflation (INF) monthly: https://data.oecd.org/price/inflation-cpi.htm
  
  Interest rate variables:
  

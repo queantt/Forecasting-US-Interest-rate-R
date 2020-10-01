@@ -39,6 +39,6 @@ Notes: The dataset are obtained form number of statistic bureases, goverment dep
 
 **Methods.R:**
 
-- Using the main VAR to predict the interest rates, and an additional model such as AR, that will have a good comparison. 
+- Using the main VAR approach to predict the interest rates in the furture, and combine with the AR model.
 
-- Combine with the Cross-validation time series data will increase the accurate prediction. 
+- Appling the Cross-validation time series data will increase the accurate prediction. 

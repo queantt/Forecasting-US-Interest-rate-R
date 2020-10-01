@@ -19,7 +19,7 @@ Macro variables:
  
  - CPI: CPI growth rate, monthly: https://fred.stlouisfed.org/series/CPALTT01USM657N
  
- - Real Gross Domestic Product (with real GDP): real GDP growth rate, quarterly: https://fred.stlouisfed.org/series/A191RL1Q225SBEA
+ - Real Gross Domestic Product: using the real GDP growth rate, quarterly: https://fred.stlouisfed.org/series/A191RL1Q225SBEA
  
  - Unemployment Rate (UN): monthly  https://fred.stlouisfed.org/series/UNRATE
  

@@ -13,12 +13,32 @@ Data_source.R:
 
 - For the macro-economic avariable: the GDP (quarterly) where the month has missing data, its missing value will equal the quarterly GDP value.
 
-Notes: The dataset are obtained form number of statistic bureases, goverment departments. The source documents in the link:.... (folder/link). All most the data are automatically downloaded from the offical websites. The full of list of source and links are collated in a filed called .....(links)
+Notes: The dataset are obtained form number of statistic bureases, goverment departments. The source documents in the link:.... (folder/link). All most the data are automatically downloaded from the offical websites. The full of list of source and links are collated in a filed called at the links as below:
+
+Macro variables:
+ 
+ - CPI: Growth Rate Previous Period, Not Seasonally Adjusted  https://fred.stlouisfed.org/series/CPALTT01USM657N
+ 
+ - Real Gross Domestic Product (with real GDP): Percent Change from Preceding Period, Seasonally Adjusted Annual Rate  https://fred.stlouisfed.org/series/A191RL1Q225SBEA
+ 
+ - Unemployment Rate (UN): Percent, Seasonally Adjusted   https://fred.stlouisfed.org/series/UNRATE
+ 
+ - Inflation (INF) https://data.oecd.org/price/inflation-cpi.htm
+ 
+ Interest rate variables:
+ 
+ - 1- month Treasury Bill (1 mth): https://fred.stlouisfed.org/series/TB4WK
+ 
+ - 3-Month Treasury Bill (3 mth): https://fred.stlouisfed.org/series/TB3MS
+ 
+ - 12 Month Treasury Bill (12 mth): https://fred.stlouisfed.org/series/TB1YR
+ 
+ - 3-Year Treasury Bond (36 mth): https://fred.stlouisfed.org/series/GS3
+ 
+ - 5-Year Treasury Bond (60 mth): https://fred.stlouisfed.org/series/GS5
 
 Method.R:
 
 - Using the main VAR to predict the interest rates, and an additional model such as AR, that will have a good comparison. 
 
 - Combine with the Cross-validation time series data will increase the accurate prediction. 
-
-

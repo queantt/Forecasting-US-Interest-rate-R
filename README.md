@@ -13,7 +13,7 @@ All most the data are automatically downloaded from the offical website. These a
 
 1) Macro variables
  
- - Inflation (CPI): monthy https://fred.stlouisfed.org/series/FPCPITOTLZGUSA
+ - Inflation (CPI): monthy https://fred.stlouisfed.org/series/FPCPITOTLZGUSA or https://www.bls.gov/cpi/data.htm
  
  - Gross Domestic Product (GDP): using the real GDP growth rate, quarterly https://fred.stlouisfed.org/series/A191RL1Q225SBEA
  

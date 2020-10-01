@@ -9,6 +9,8 @@ This repository contains the data behind the "Forecasting the US interest rate f
 
 **Variables with its source:**
 
+All most the data are automatically downloaded from the offical websites. The links are collated as the link below:
+
 1) Macro variables
  
  - Inflation (CPI): monthy https://fred.stlouisfed.org/series/FPCPITOTLZGUSA
@@ -28,14 +30,12 @@ This repository contains the data behind the "Forecasting the US interest rate f
  - 3-Year Treasury Bond (36 mth): https://fred.stlouisfed.org/series/GS3
  
  - 5-Year Treasury Bond (60 mth):  https://fred.stlouisfed.org/series/GS5
-
+ 
 **Data_exploration.R:**
 
 - For interest-rate variables, the data incomplete might be removed.
 
 - For the macro-economic avariable: the real GDP (quarterly) where the month has missing data, its missing value will equal the quarterly GDP value.
-
-Notes: The dataset are obtained form number of statistic bureases, goverment departments. The source documents in the link:.... (folder/link). All most the data are automatically downloaded from the offical websites. The full of list of source and links are collated in a filed called at the links as below:
 
 **Methods.R:**
 

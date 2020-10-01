@@ -23,7 +23,7 @@ This repository contains the data behind the "Forecasting the US interest rate f
  
  - 3-Month Treasury Bill (3 mth):  https://fred.stlouisfed.org/series/TB3MS
  
- - 12-Month Treasury Bill (12 mth):  https://fred.stlouisfed.org/series/TB1YR
+ - 1-year Treasury Bill (12 mth):  https://fred.stlouisfed.org/series/TB1YR
  
  - 3-Year Treasury Bond (36 mth): https://fred.stlouisfed.org/series/GS3
  

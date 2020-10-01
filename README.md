@@ -9,7 +9,7 @@ This repository contains the data behind the "Forecasting the US interest rate f
 
 **Variables with its source:**
 
-All most the data are automatically downloaded from the offical website. These are collated as the links below:
+All most the data could be automatically downloaded from the offical websites. These are collated as the links below:
 
 1) Macro variables
  

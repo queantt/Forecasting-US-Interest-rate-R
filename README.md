@@ -17,13 +17,13 @@ Notes: The dataset are obtained form number of statistic bureases, goverment dep
 
 Macro variables:
  
- - CPI: Growth Rate Previous Period, Not Seasonally Adjusted  https://fred.stlouisfed.org/series/CPALTT01USM657N
+ - CPI: CPI growth rate, monthly: https://fred.stlouisfed.org/series/CPALTT01USM657N
  
- - Real Gross Domestic Product (with real GDP): Percent Change from Preceding Period, Seasonally Adjusted Annual Rate  https://fred.stlouisfed.org/series/A191RL1Q225SBEA
+ - Real Gross Domestic Product (with real GDP): real GDP growth rate, quarterly: https://fred.stlouisfed.org/series/A191RL1Q225SBEA
  
- - Unemployment Rate (UN): Percent, Seasonally Adjusted   https://fred.stlouisfed.org/series/UNRATE
+ - Unemployment Rate (UN): monthly  https://fred.stlouisfed.org/series/UNRATE
  
- - Inflation (INF) https://data.oecd.org/price/inflation-cpi.htm
+ - Inflation (INF) monthly: https://data.oecd.org/price/inflation-cpi.htm
  
  Interest rate variables:
  

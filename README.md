@@ -9,7 +9,7 @@ Cleaning_script.R:
 
 Variables with its source:
 
-* Macro variables
+1) Macro variables
  
  - Inflation (CPI): monthy https://fred.stlouisfed.org/series/FPCPITOTLZGUSA
  
@@ -17,7 +17,7 @@ Variables with its source:
  
  - Unemployment Rate (UN): monthly  https://fred.stlouisfed.org/series/UNRATE
  
- * Interest rate variables:
+ 2) Interest rate variables:
  
  - 1-month Treasury Bill (1 mth):  https://fred.stlouisfed.org/series/TB4WK
  

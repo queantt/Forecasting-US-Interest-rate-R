@@ -19,21 +19,21 @@ Macro variables:
  
  - Inflation (CPI): monthy https://fred.stlouisfed.org/series/FPCPITOTLZGUSA
  
- - Real Gross Domestic Product: using the real GDP growth rate, quarterly https://fred.stlouisfed.org/series/A191RL1Q225SBEA
+ - Gross Domestic Product (GDP): using the real GDP growth rate, quarterly https://fred.stlouisfed.org/series/A191RL1Q225SBEA
  
  - Unemployment Rate (UN): monthly  https://fred.stlouisfed.org/series/UNRATE
  
  Interest rate variables:
  
- - 1- month Treasury Bill (1 mth): https://fred.stlouisfed.org/series/TB4WK
+ - 1-month Treasury Bill (1 mth):  https://fred.stlouisfed.org/series/TB4WK
  
- - 3-Month Treasury Bill (3 mth): https://fred.stlouisfed.org/series/TB3MS
+ - 3-Month Treasury Bill (3 mth):  https://fred.stlouisfed.org/series/TB3MS
  
- - 12 Month Treasury Bill (12 mth): https://fred.stlouisfed.org/series/TB1YR
+ - 12-Month Treasury Bill (12 mth):  https://fred.stlouisfed.org/series/TB1YR
  
  - 3-Year Treasury Bond (36 mth): https://fred.stlouisfed.org/series/GS3
  
- - 5-Year Treasury Bond (60 mth): https://fred.stlouisfed.org/series/GS5
+ - 5-Year Treasury Bond (60 mth):  https://fred.stlouisfed.org/series/GS5
 
 Method.R:
 

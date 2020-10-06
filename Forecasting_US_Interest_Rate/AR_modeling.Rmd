@@ -9,20 +9,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
   
-#order library
-library(zoo)
-library(forecast)
-library(AER)
-library(delt)
-library(fGarch)
-library(forecast)
-library(dynlm)
-library(lubridate)
-library(ggplot2)
-library(ustyc)
-library(dplyr)
-library(quantmod)
-
 ```{r}
 library(astsa)
 require(lattice)
@@ -33,12 +19,10 @@ library(naniar)
 library(ggplot2)
 ```
 
-
 ```{r}
 #importing the data
-us_ir <- read_excel("Data_interest rate_all terms.xlsx")
+us_ir <- read_excel("Data/Data_interest rate_all terms.xlsx")
 ```
-
 
 ```{r}
 #adjusting column names
@@ -52,7 +36,6 @@ tb = cbind(mth1,mth3,mth12,mth36,mth60)
 View(us_ir$mth1)
 ```
 
-
 ```{r}
 #Understanding data
 quantile(us_ir$mth3)
@@ -60,16 +43,12 @@ quantile(us_ir$mth12, na.rm = TRUE)
 quantile(us_ir$mth60)
 ```
 
-
-
 ```{r}
 #computing the standard deviation
 sd(mth3)
 sd(mth12, na.rm =  TRUE)
 sd(mth60)
 ```
-
-
 
 ```{r}
 #plotting the missing data in 12-month 
@@ -85,7 +64,6 @@ vis_miss(us_ir)
 ```
 
 #Before Adjustment
-http://freerangestats.info/blog/2019/04/20/yield-curve (Color spread)
 ```{r}
 #Plotting the yield curve full variables
 plot.ts(tb,            
@@ -98,8 +76,6 @@ xyplot.ts(tb,superpose=TRUE,auto.key=list(columns=4),xlab = NULL,ylab=" All Yiel
 
 xyplot.ts(cbind(mth3,mth12,mth60),superpose=TRUE,auto.key=list(columns=4),xlab= NULL,ylab=" Observe Yied(%)")
 ```
-
-
 
 ```{r}
 #Computing the ACF 
@@ -124,7 +100,6 @@ C=1200 for monthly, C=400 for quarterly (cite: "how..")
 stats::lag(1:5, 1)
 dplyr::lag(1:5, 1)
 Log differencing and its plot
-
 
 ```{r}
 #(1st Lag)
@@ -157,75 +132,24 @@ acf(na.omit(mth60_change),
     main = "Sample Autocorrelation for interest rate 36mth change")
 ```
 
-
 2. Differcing 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#review the new code
-```{r}
-mth3_change <- xts(1200 * log(mth3/stats::lag(mth3,1)))
-                           
-acf(na.omit(mth3_change), lag.max = 4, plot = FALSE)
-acf(na.omit(mth3_change), 
-    main = "Sample Autocorrelation for interest rate 3mth change")
-```
-
-
-
-#Differencing operator and plotting ACF
-
 ```{r}
 diff3_1 = diff(mth3)
 diff3_2 = diff(diff3_1)
 
-plot(cbind(mth3, c(diff3_1), c(diff3_2), type ="1"))
-
-par(mfrow = c(1, 2)) 
+plot.ts(cbind(mth3,diff3_1,diff3_2))
 
 acf(na.omit(diff3_2), lag.max = 25, plot = FALSE)
 acf(na.omit(diff3_2), 
     main = "Sample Autocorrelation for interest rate 3mth change")
 ```
 
-#try to combine log and diff to see to output
-
-#plot(log10(mth3),ylab='Log (3 months)')
-#plot(diff(log10(mth3)),ylab='Differenced Log (3 months)')
-#par(mfrow = c(1,2))
-
-#acf(na.omit(diff(log(mth3))), lag.max = 25, plot = FALSE)
-#acf(na.omit(diff(log(mth3))), 
-    main = "Sample Autocorrelation for interest rate 3mth change")
-#pacf(na.omit(diff(log(mth3))),main='PACF Interest rate 3 months')
-
-
-
 #AR modelling for 3-month
-
 ```{r}
 #subset data
 Sub3 <- diff3_2 ["1971::2019"]
 View(diff3_2)
 ```
-
-
 
 ```{r}
 #Estimate the model
@@ -235,8 +159,6 @@ ar.ols(Sub3,
        intercept = TRUE)
 ```
 
-
-
 ```{r}
 #length of data set
 N <- length(Sub3)
@@ -244,63 +166,45 @@ Sub3_level <- as.numeric(Sub3[-1])
 Sub3_lags <- as.numeric(Sub3[-N])
 ```
 
-
-
 ```{r}
 #estimate the model
 armod3 <- lm(Sub3_level ~ Sub3_lags)
 ```
-
-
 
 ```{r}
 #Robust summary 
 coefficients(armod3, vcov. = vcovHC, type="HC1")
 ```
 
-
-
 ```{r}
 #Non robust 
 summary(armod3)$coefficients
 ```
-
-
 
 ```{r}
 #assign US interest rate change in 2019:12:01
 new3 <- data.frame("Sub3_lags" = Sub3_level[N-1])
 ```
 
-
-
 ```{r}
 #forecast US interest rate change in 2020:01:01
 forecast(armod3, newdata = new3 )
 ```
-
-
 
 ```{r}
 #compute the forecast error
 forecast(armod3, newdata = new3)$mean - mth3_change["2019"][1]
 ```
 
-
-
 ```{r}
 #R^2
 summary(armod3)$r.squared
 ```
 
-
-
 ```{r}
 #SER
 summary(armod3)$sigma
 ```
-
-
 
 ```{r}
 #AR(p) model with dynlm: dynamic linear models and time series regression
@@ -311,20 +215,14 @@ summary(mth3_AR2)$r.squared
 summary(mth3_AR2)$sigma
 ```
 
-
-
 ```{r}
 coeftest(mth3_AR2, vcov. = , sandwich)
 ```
-
-
 
 ```{r}
 # AR(2) forecast of interest rate change in 2020-01-01
 forecast <- c("20120-01-01" = coef(mth3_AR2) %*% c(1, Sub3_level[N-1], Sub3_level[N-2]))
 ```
-
-
 
 ```{r}
 #compute AR(2) forecast error
@@ -332,10 +230,7 @@ mth3["2020"][1]-forecast
 View(mth3["2020"][1]-forecast)
 ```
 
-                    
-        
-#AR modelling for 12-month   
-
+#AR modelling for 12-month
 ```{r}
 diff12_1 = diff(mth12,na.rm =  TRUE)
 diff12_2 = diff(diff12_1, na.rm =  TRUE)
@@ -354,14 +249,11 @@ acf(na.omit(diff12_2),
       na.action = na.pass)
 ```
 
-
 ```{r}
 #subset data
 Sub12 <- diff12_2 ["1971::2019"]
 View(diff12_2)
 ```
-
-
 
 ```{r}
 #Estimate the model
@@ -379,55 +271,45 @@ Sub12_level <- as.numeric(Sub12[-1])
 Sub12_lags <- as.numeric(Sub12[-N])
 ```
 
-
-
 ```{r}
 #estimate the model
 armod12 <- lm(Sub12_level ~ Sub12_lags)
 ```
-
 
 ```{r}
 #Robust summary 
 coefficients(armod12, vcov. = vcovHC, type="HC1")
 ```
 
-
 ```{r}
 #Non robust 
 summary(armod12)$coefficients
 ```
-
 
 ```{r}
 #assign US interest rate change in 2019:12:01
 new12 <- data.frame("Sub12_lags" = Sub12_level[N-1])
 ```
 
-
 ```{r}
 #forecast US interest rate change in 2020:01:01
 forecast(armod12, newdata = new12 )
 ```
-
 
 ```{r}
 #compute the forecast error
 forecast(armod12, newdata = new12)$mean - mth12_change["2019"][1]
 ```
 
-
 ```{r}
 #R^2
 summary(armod12)$r.squared
 ```
 
-
 ```{r}
 #SER
 summary(armod12)$sigma
 ```
-
 
 ```{r}
 #AR(p) model with dynlm: dynamic linear models and time series regression
@@ -438,27 +320,20 @@ summary(mth12_AR2)$r.squared
 summary(mth12_AR2)$sigma
 ```
 
-
 ```{r}
 coeftest(mth12_AR2, vcov. = , sandwich)
 ```
-
 
 ```{r}
 # AR(2) forecast of interest rate change in 2020-01-01
 forecast <- c("20120-01-01" = coef(mth12_AR2) %*% c(1, Sub12_level[N-1], Sub12_level[N-2]))
 ```
 
-
 ```{r}
 #compute AR(2) forecast error
 mth12["2020"][1]-forecast
 View(mth12["2020"][1]-forecast)
 ```
-                    
-                    
-                    
-                    
 #AR modelling for 60-month   
 
 ```{r}
@@ -477,14 +352,11 @@ acf(na.omit(diff60_2),
     main = "Sample Autocorrelation for interest rate 60 mth change")
 ```
 
-
 ```{r}
 #subset data
 Sub60 <- diff60_2 ["1971::2019"]
 View(diff60_2)
 ```
-
-
 
 ```{r}
 #Estimate the model
@@ -494,8 +366,6 @@ ar.ols(Sub60,
        intercept = TRUE)
 ```
 
-
-
 ```{r}
 #length of data set
 N <- length(Sub60)
@@ -503,63 +373,45 @@ Sub60_level <- as.numeric(Sub60[-1])
 Sub60_lags <- as.numeric(Sub60[-N])
 ```
 
-
-
 ```{r}
 #estimate the model
 armod60 <- lm(Sub60_level ~ Sub60_lags)
 ```
-
-
 
 ```{r}
 #Robust summary 
 coefficients(armod60, vcov. = vcovHC, type="HC1")
 ```
 
-
-
 ```{r}
 #Non robust 
 summary(armod60)$coefficients
 ```
-
-
 
 ```{r}
 #assign US interest rate change in 2019:12:01
 new60 <- data.frame("Sub60_lags" = Sub60_level[N-1])
 ```
 
-
-
 ```{r}
 #forecast US interest rate change in 2020:01:01
 forecast(armod60, newdata = new60 )
 ```
-
-
 
 ```{r}
 #compute the forecast error
 forecast(armod60, newdata = new60)$mean - mth60_change["2019"][1]
 ```
 
-
-
 ```{r}
 #R^2
 summary(armod60)$r.squared
 ```
 
-
-
 ```{r}
 #SER
 summary(armod60)$sigma
 ```
-
-
 
 ```{r}
 #AR(p) model with dynlm: dynamic linear models and time series regression
@@ -570,20 +422,14 @@ summary(mth60_AR2)$r.squared
 summary(mth60_AR2)$sigma
 ```
 
-
-
 ```{r}
 coeftest(mth60_AR2, vcov. = , sandwich)
 ```
-
-
 
 ```{r}
 # AR(2) forecast of interest rate change in 2020-01-01
 forecast <- c("20120-01-01" = coef(mth60_AR2) %*% c(1, Sub60_level[N-1], Sub60_level[N-2]))
 ```
-
-
 
 ```{r}
 #compute AR(2) forecast error
@@ -591,31 +437,4 @@ mth60["2020"][1]-forecast
 View(mth60["2020"][1]-forecast)
 ```
                     
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                                        
                     

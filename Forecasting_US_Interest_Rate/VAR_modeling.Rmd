@@ -1,0 +1,267 @@
+---
+title: "VAR modeling"
+author: "An Tran"
+date: "9/29/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+library(vars)
+library(astsa)
+library(forecast)
+library(readxl)
+library(xts)
+require(graphics)
+```
+
+
+```{r}
+us_macro <- read_excel("Data_external.xlsx")
+us_yields <- read_excel("Data_interest rate_all terms.xlsx")
+m = cbind(us_macro,us_yields)
+
+View(list(us_yields,us_macro))
+View(list(m$unrate,m$gdp))
+View(m$unrate)
+```
+
+
+```{r}
+colnames(m) <- c("DATE", "mth1", "mth3", "mth12", "mth36", "mth60","gdp","unrate", "inf")
+plot.ts(m$unr,y=NULL,plot.type = "multiple","single", axes = TRUE)
+```
+
+
+#compute the GDP growth rate with two methods --> the same output but not yet
+```{r}
+#gdp_growth <- xts(1200 * log(gdp/stats::lag(gdp,1)))
+#gdp_growth1 <- ts(1200*log(gdp[-1]/gdp[-length(gdp)]))
+#View(list(gdp_growth,gdp_growth1))
+```
+
+#Error when combine the "un" variable
+```{r}
+#x11 = cbind(mth3,un)
+#var2 <- VAR(x1, p=2, type = "const")
+#summary(var2)
+```
+
+
+```{r}
+x1 = cbind(mth3,gdp)
+var2 <- VAR(x1, p=2, type = "const")
+summary(var2)
+```
+
+
+# Test serial correlation using Portmanteau test
+we test that the residuals are uncorrelated
+H0: Null hypothesis of no autocorrelation
+Ha: Autocorrelation 
+Reject: p-value << 0.05
+reject --> Ho, accept
+```{r}
+serial.test(var2, lags.pt = 10, type = "PT.asymptotic")
+```
+
+
+# Augmented Dickey-Fuller Test Unit Root (ADF)
+
+To find if a series has a unit root 
+a series with a trend-line -> non-stationary -> will have a unit root
+
+check for a unit root, where we note that we able to reject null of unit root when using the Dickey-Fuller test.
+
+H0: random walk
+Ha: trend/stationary process
+
+```{r}
+adf.mth3<- ur.df(mth3, type = "trend", selectlags = "AIC")
+summary(adf.mth3)
+```
+
+```{r}
+info <- VARselect(x1, lag.max = 24, type = "const")
+info$selection
+```
+
+
+```{r}
+serial <- serial.test(var2, lags.pt = 10, type = "PT.asymptotic")
+plot(serial, names = "mth3")
+```
+
+# multivariate ARCH Lagrange-Multiplier test
+Heteroscedasticity in the residuals 
+p-value that is greater than 5% would indicate the absence of heteroscedasticity
+
+H0: Research H0: heteroscedasticity 
+Ha: the absence of heteroscedasticity
+=> non-heteroscedasticity
+```{r}
+arch <- arch.test(var2, lags.multi = 12, multivariate.only = TRUE)
+arch
+```
+
+# Normality test
+distribution of the residuals
+Big p-value: not normally distributed
+
+H0: normally distributed
+Ha: not normally distributed
+```{r}
+norm <- normality.test(var2, multivariate.only = TRUE)
+norm
+```
+
+
+# Granger causality
+```{r}
+mth3.cause <- causality(var2, cause = "mth3")
+mth3.cause
+```
+
+
+#Error when adding the "un" variable
+```{r}
+# Model 3: Use only 3 variables and 2 lags
+x2 = cbind(mth3,gdp,inf)
+var2 <- VAR(x2, p=2, type = "const")
+summary(var2)
+```
+
+
+```{r}
+# Model 3: Use only 3 variables and 2 lags
+x2 = cbind(mth3,gdp,inf)
+var2 <- VAR(x2, p=2, type = "const")
+summary(var2)
+```
+
+View and analyze residuals of mth3 equation
+
+```{r}
+acf(residuals(var2)[,2])
+```
+
+# HYPOTHESIS
+# testing independence (serial correlation)
+Ljung-Box test for independence
+a non-stationary signal will have a low p-value
+a stationary (white noise/random) will have high p-value
+
+H0: independent
+H1: non-independent
+-> non-stationary,wanna stationary
+```{r}
+#lag.length = 26
+Box.test(inf, lag = 26, type = "Ljung-Box")
+Box.test(un, lag = 26, type = "Ljung-Box")
+```
+
+# Augmented Dickey–Fuller (ADF) test for unit root
+
+To find if a series has a unit root 
+a series with a trendline -> nonstationary -> will have a unit root
+
+```{r}
+options(warn=-1)
+library(tseries)
+```
+
+```{r}
+adf.test(inf)
+adf.test(gdp)
+adf.test(mth3)
+#Ho: non-stationary,
+#H1: stationary
+```
+
+H0: non-stationary (series has a unit root)
+H1: stationary (white noise/random)
+
+
+#Kwiatkowski-Phillips-Schmidt-Shin (KPSS)
+
+```{r}
+#remove use ADF
+kpss.test(gdp, null = "Trend")
+kpss.test(inf, null = "Trend")
+kpss.test(mth3, null = "Trend")
+```
+
+---
+title: NEW CODE
+Cite: Day7-OOS
+---
+
+#Forecast using VAR, with h = how many periods into the future
+#Error, cant fix yet
+```{r}
+fc <- forecast(var2, h = 1)
+plot(fc)
+print(fc)
+```
+#time series object = matrix
+
+#Error
+```{r}
+# First example in reporting OOS performance 
+# 1. Split your data into train/test
+training <- window(x1, end = 2010)
+test <- window(x1, start = 2015)
+````
+
+
+```{r}
+# 2. Fit my model on training
+
+fit <- VAR(training, p = 10, type = "const")
+
+# 3. Predict on test set
+
+fcast <- forecast(fit, h = 40)
+
+actual_y <- as.data.frame(test[,1])
+predicted_y_hat <- as.data.frame(fcast$forecast$mth3$mean)
+
+# 4. Compute RMSE
+result <- cbind(actual_y, predicted_y_hat)
+names(result) <- c("Actual", "Predicted")
+result$sq_err <- (as.numeric(result$Actual) - as.numeric(result$Predicted))^2
+RMSE <- sqrt(mean(result$sq_err))
+````
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
